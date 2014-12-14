@@ -1,4 +1,4 @@
-import cPickle as pickle
+import pickle as pickle
 import os
 import subprocess
 
@@ -126,7 +126,7 @@ class BenchmarkRunner(object):
 
         any_succeeded = False
 
-        for checksum, timing in results.iteritems():
+        for checksum, timing in results.items():
             if 'traceback' in timing:
                 tracebacks.append(timing['traceback'])
 
@@ -250,7 +250,7 @@ class BenchmarkRunner(object):
 
         if not self.run_order in _RUN_ORDERS:
             raise ValueError('unrecognized run_order=%r. Must be among %s'
-                             % (self.run_order, _RUN_ORDERS.keys()))
+                             % (self.run_order, list(_RUN_ORDERS.keys())))
         revs_to_run = _RUN_ORDERS[self.run_order](revs_to_run)
 
         return revs_to_run

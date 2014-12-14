@@ -28,4 +28,4 @@ python setup.py build_ext --inplace
 
 DEPENDENCIES = [os.path.join(cur_dir, 'vb_common.py')]
 
-START_DATE = datetime(2011, 01, 01)
+START_DATE = datetime(2011, 0o1, 0o1)

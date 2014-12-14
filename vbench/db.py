@@ -172,5 +172,5 @@ class BenchmarkDB(object):
 def _sqa_to_frame(result):
     rows = [tuple(x) for x in result]
     if not rows:
-        return DataFrame(columns=result.keys())
-    return DataFrame.from_records(rows, columns=result.keys())
+        return DataFrame(columns=list(result.keys()))
+    return DataFrame.from_records(rows, columns=list(result.keys()))

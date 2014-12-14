@@ -1,7 +1,8 @@
 from datetime import datetime
 
 import gitbench.git as git
-reload(git)
+import imp
+imp.reload(git)
 
 # repo_path = '/home/wesm/code/pandas'
 # repo = git.GitRepo(repo_path)

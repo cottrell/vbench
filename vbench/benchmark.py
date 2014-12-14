@@ -1,6 +1,6 @@
 # pylint: disable=W0122
 
-from cStringIO import StringIO
+from io import StringIO
 
 import cProfile
 try:
@@ -9,7 +9,7 @@ except ImportError:
     # pstats.py was not available in python 2.6.6 distributed on Debian squeeze
     # systems and was included only starting from 2.6.7-2.  That is why import
     # from a local copy
-    import _pstats as pstats
+    from . import _pstats as pstats
 
 import gc
 import hashlib
@@ -49,11 +49,11 @@ class Benchmark(object):
 
     def _setup(self):
         ns = globals().copy()
-        exec self.setup in ns
+        exec(self.setup, ns)
         return ns
 
     def _cleanup(self, ns):
-        exec self.cleanup in ns
+        exec(self.cleanup, ns)
 
     @property
     def checksum(self):
@@ -66,8 +66,8 @@ class Benchmark(object):
         code = compile(self.code, '<f>', 'exec')
 
         def f(*args, **kw):
-            for i in xrange(ncalls):
-                exec code in ns
+            for i in range(ncalls):
+                exec(code, ns)
         prof.runcall(f)
 
         self._cleanup(ns)
@@ -108,8 +108,8 @@ class Benchmark(object):
             gc.disable()
 
         start = time.clock()
-        for _ in xrange(ncalls):
-            exec code in ns
+        for _ in range(ncalls):
+            exec(code, ns)
 
         elapsed = time.clock() - start
         if disable_gc:
@@ -247,7 +247,7 @@ def _format_call(call):
     if args:
         content += ', '.join(args)
     if kwds:
-        fmt_kwds = ['%s=%s' % item for item in kwds.iteritems()]
+        fmt_kwds = ['%s=%s' % item for item in kwds.items()]
         joined_kwds = ', '.join(fmt_kwds)
         if args:
             content = content + ', ' + joined_kwds
@@ -283,7 +283,7 @@ class BenchmarkSuite(list):
     @property
     def benchmarks(self):
         """Discard non-benchmark elements of the list"""
-        return filter(lambda elem: isinstance(elem, Benchmark), self)
+        return [elem for elem in self if isinstance(elem, Benchmark)]
 
 # Modified from IPython project, http://ipython.org
 
@@ -361,7 +361,7 @@ def magic_timeit(ns, stmt, ncalls=None, repeat=3, force_ms=False):
     # Minimum time above which compilation time will be reported
     code = compile(src, "<magic-timeit>", "exec")
 
-    exec code in ns
+    exec(code, ns)
     timer.inner = ns["inner"]
 
     if ncalls is None:
@@ -394,7 +394,7 @@ def magic_timeit(ns, stmt, ncalls=None, repeat=3, force_ms=False):
 
 def gather_benchmarks(ns):
     benchmarks = []
-    for v in ns.values():
+    for v in list(ns.values()):
         if isinstance(v, Benchmark):
             benchmarks.append(v)
         elif isinstance(v, BenchmarkSuite):

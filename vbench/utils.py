@@ -67,12 +67,12 @@ def multires_order(n):
     # to speed up checks, we will consume some memory but mark
     # each index whenever we add it to out
     seen = [False] * n
-    for i in xrange(1, n):
+    for i in range(1, n):
         # fp step so we could point to the 0th, middle, last
         # on the first run
         step = float(n-1)/(2*i)
         gotnew = False
-        for k in xrange(int(ceil(float(n)/step))):
+        for k in range(int(ceil(float(n)/step))):
             idx = int(k*step)
             if not seen[idx]: # in seen:
                out.append(idx)
@@ -96,7 +96,7 @@ def run_cmd(cmd, stderr_levels=('warn', 'error'), **kwargs):
       Levels of output dependent on success or failure of the command
     """
 
-    log.debug(cmd if isinstance(cmd, basestring) else ' '.join(cmd))
+    log.debug(cmd if isinstance(cmd, str) else ' '.join(cmd))
     proc = subprocess.Popen(cmd,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -128,7 +128,7 @@ def collect_benchmarks(modules):
         log.debug(" Loading %s" % module_name)
         ref = importlib.import_module(module_name)
         new_benchmarks = list(chain(
-            *[collect_benchmarks_from_object(x) for x in ref.__dict__.values()]))
+            *[collect_benchmarks_from_object(x) for x in list(ref.__dict__.values())]))
         for bm in new_benchmarks:
             assert(bm.name is not None)
             bm.module_name = module_name
